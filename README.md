@@ -20,6 +20,7 @@
 - Le **code fourni** (Web API .NET 8)
 - Visual Studio / VS Code
 - Git installé
+- Avoir .net 8 sur le poste 
 
 
 > Ce Tp faire suite a la demo du formateur donc ne detaille pas toutes les etapes
@@ -32,7 +33,7 @@
 Clonez le projet de démarrage :
 
 ```bash
-git clone https://github.com/ton-orga/webapi-starter-dotnet8.git
+git clone <url>
 cd webapi-starter-dotnet8
 ```
 
@@ -59,6 +60,14 @@ dotnet run --project MyWebApi/MyWebApi.csproj
    - **Région** : Europe ou proche
    - **Plan App Service** : Gratuit (F1) ou B1
 3. Accédez à la Web App > **Centre de déploiement** > **Configurer manuellement plus tard**
+3. Accédez à la Web App > Parametres > Configuration 
+    - Verifier que **Paramètres de la pile**
+     ![Pile](pile.png)
+
+    - Dans les **Paramètres de plateforme** activer le SCM
+     ![Securite](securite.png)
+
+
 4. Allez dans **"Profil de publication"** :
    - Téléchargez le **fichier XML**
    - Gardez ce fichier pour l’étape GitHub
