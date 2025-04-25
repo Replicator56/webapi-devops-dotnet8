@@ -56,10 +56,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build . --file Dockerfile --tag forsanta/hello-word:${{ env.TAG }}
+          docker build . --file Dockerfile --tag forsanta/webapi-starter-dotnet8:latest
       - name: Push Docker image
         run: |
-          docker push forsanta/hello-word:${{ env.TAG }}
+          docker push forsanta/webapi-starter-dotnet8:latest
 
   deploy:
     permissions:
