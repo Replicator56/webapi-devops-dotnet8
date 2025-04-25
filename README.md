@@ -124,6 +124,126 @@ GitHub propose des **modèles de workflow**. Pour créer votre pipeline :
 
 ---
 
+Parfait ! On va donc compléter la **Partie 6** avec un **workflow GitHub Actions** qui :
+
+1. Construit l’image Docker,
+2. La pousse sur Docker Hub,
+3. Déclenche ainsi la mise à jour automatique de la Web App (via le déploiement continu activé sur Azure).
+
+---
+
+Voici la **nouvelle version de la Partie 6**, mise à jour avec un `workflow` :
+
+---
+
+## 🐳 Partie 5 – Déploiement via une image Docker
+
+### 🎯 Objectif
+
+Conteneuriser la Web API, publier l’image sur Docker Hub via GitHub Actions, et configurer une Web App Azure qui se met à jour automatiquement via le déploiement continu Docker.
+
+---
+
+### ⚙️ Étape 1 – Création du Dockerfile
+
+Créez un fichier `Dockerfile` à la racine du projet avec ce contenu :
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish MyWebApi/MyWebApi.csproj -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "MyWebApi.dll"]
+```
+
+---
+
+### 🐙 Étape 2 – Créer un compte Docker Hub
+
+1. Allez sur [https://hub.docker.com](https://hub.docker.com)
+2. Créez un compte
+3. Créez un **repository public** (ex. : `webapi-demo`)
+
+---
+
+### 🔐 Étape 3 – Ajouter les secrets GitHub
+
+Dans le dépôt GitHub :
+
+- Va dans **Settings > Secrets and variables > Actions**
+- Ajoute ces secrets :
+
+| Nom du secret       | Contenu                                            |
+|----------------------|----------------------------------------------------|
+| `DOCKERHUB_USERNAME` | Ton identifiant Docker Hub                         |
+| `DOCKERHUB_TOKEN`    | Ton **token d'accès** (à créer dans Docker Hub)    |
+
+> 🧠 Pour générer un token : Docker Hub > Account Settings > Security > New Access Token
+
+---
+
+### 🤖 Étape 4 – Créer le workflow GitHub Actions
+
+Crée un fichier `.github/workflows/docker-publish.yml` :
+
+```yaml
+name: Build and Push Docker image
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/webapi-demo:latest
+```
+
+---
+
+### ☁️ Étape 5 – Configurer la Web App sur Azure
+
+1. Créez une **Web App for Containers**
+   - OS : Linux
+   - Type de conteneur : Unique
+   - Source : Docker Hub
+   - Accès : Public
+   - Image : `votrepseudo/webapi-demo:latest`
+   - Déploiement continu : ✅ activé
+
+2. Allez dans **Configuration > Variables d'application**
+   - Ajoutez : `WEBSITES_PORT = 8080`
+
+---
+
+Souhaites-tu que j'intègre directement cette version complète dans le `.md` ?
+
 ## ⭐ Bonus (Facultatif)
 
 - Ajouter un badge GitHub Actions dans le `README.md`
