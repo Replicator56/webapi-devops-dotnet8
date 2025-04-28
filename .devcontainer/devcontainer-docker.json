@@ -1,0 +1,17 @@
+{
+  "name": "Node.js & Docker",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu",
+  "features": {
+    "docker": "latest"
+  },
+  "extensions": [
+    "ms-azuretools.vscode-docker"
+  ],
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "runArgs": [
+    "--privileged",
+    "--volume", "/var/run/docker.sock:/var/run/docker.sock"
+  ]
+}
