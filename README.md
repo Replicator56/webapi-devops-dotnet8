@@ -111,7 +111,6 @@ GitHub propose des **modèles de workflow**. Pour créer votre pipeline :
 4. Sauvegardez et validez le fichier dans `.github/workflows/`
 
 > 🧠 Cela vous permet de gagner du temps tout en personnalisant votre pipeline.
-
 ---
 
 ## 🚀 Partie 4 – Lancement du déploiement
