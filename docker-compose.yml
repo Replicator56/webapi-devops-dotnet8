@@ -1,0 +1,46 @@
+
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: sk_postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Scripts d'initialisation des bases de données
+      - ./init-ticketdb.sql:/docker-entrypoint-initdb.d/1-init-ticketdb.sql
+      - ./init-agentdb.sql:/docker-entrypoint-initdb.d/2-init-agentdb.sql
+    networks:
+      - sk-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: ["postgres", "-c", "log_statement=all"]
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: sk_pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "8042:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sk-network
+
+volumes:
+  postgres_data:
+    name: sk_postgres_data
+
+networks:
+  sk-network:
+    driver: bridge
