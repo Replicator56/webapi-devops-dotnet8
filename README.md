@@ -75,10 +75,6 @@ dotnet run --project MyWebApi/MyWebApi.csproj
 > il se peut que ce ne soit pas aussi facile ;)
 ---
 
-Parfait ! Voici une version mise à jour de la **Partie 3**, plus pédagogique, en proposant aux étudiants d’utiliser un **template GitHub Actions** pour démarrer plus facilement.
-
----
-
 ## 🔐 Partie 3 – Configuration des secrets GitHub & création du pipeline
 
 ### 🔑 Étape 1 – Ajouter les secrets GitHub
@@ -124,16 +120,11 @@ GitHub propose des **modèles de workflow**. Pour créer votre pipeline :
    `https://webapi-votreprenom.azurewebsites.net`
 
 ---
-
-Parfait ! On va donc compléter la **Partie 6** avec un **workflow GitHub Actions** qui :
+Compléter la **Partie 6** avec un **workflow GitHub Actions** qui :
 
 1. Construit l’image Docker,
 2. La pousse sur Docker Hub,
 3. Déclenche ainsi la mise à jour automatique de la Web App (via le déploiement continu activé sur Azure).
-
----
-
-Voici la **nouvelle version de la Partie 6**, mise à jour avec un `workflow` :
 
 ---
 
@@ -241,10 +232,6 @@ jobs:
 2. Allez dans **Configuration > Variables d'application**
    - Ajoutez : `WEBSITES_PORT = 8080`
 
----
-
-Souhaites-tu que j'intègre directement cette version complète dans le `.md` ?
-
 ## ⭐ Bonus (Facultatif)
 
 - Ajouter un badge GitHub Actions dans le `README.md`
@@ -253,3 +240,100 @@ Souhaites-tu que j'intègre directement cette version complète dans le `.md` ?
 - Ajouter un slot de préproduction sur Azure
 - Utiliser un environnement GitHub pour déploiement conditionnel
 - Separer en 2 pipeline CI.yml et CD.yml
+
+Bien sûr, voici la version mise à jour du TP avec la précision que le runtime (.NET 8) doit être envoyé **en paramètre** à l’étape 3, pour que les étudiants l’utilisent dans leur workflow principal :
+
+---
+
+# TP : Déploiement automatisé d’une Web App Azure avec GitHub Actions
+
+Durée estimée : 3 heures
+
+---
+
+## Objectif
+
+Automatiser la création d’une Web App Azure (si elle n’existe pas) et le déploiement d’une application .NET 8 via GitHub Actions.
+
+---
+
+## Prérequis
+
+* Installer la CLI Azure (`az`) : [Installation CLI Azure](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+* Avoir un compte Azure avec un abonnement actif
+* Configurer un service principal Azure et récupérer le JSON des credentials pour le secret `AZURE_CREDENTIALS` dans GitHub
+* Se connecter à Azure en local avec `az login` (ou `az login --use-device-code` si besoin)
+
+---
+
+## Étapes du TP
+
+### Étape 1 : Connexion à Azure
+
+* En local, connectez-vous à Azure via la CLI :
+
+  ```bash
+  az login
+  ```
+
+  ou
+
+  ```bash
+  az login --use-device-code
+  ```
+* Créez un service principal si ce n’est pas déjà fait, et exportez les credentials JSON dans un secret GitHub nommé `AZURE_CREDENTIALS`
+
+---
+
+### Étape 2 : Création du workflow `verify-create-webapp.yml`
+
+* Créez un fichier `.github/workflows/verify-create-webapp.yml`
+* Ce workflow doit :
+
+  * Vérifier si la Web App Azure existe dans un groupe de ressources donné
+  * Si elle n’existe pas, la créer avec le runtime passé en paramètre (ex : `.NET 8`)
+  * Récupérer le profil de publication à la volée (sans écrire sur disque)
+  * Retourner ce profil de publication en output du workflow
+* Ce workflow sera appelé via un `workflow_call` dans un autre pipeline
+
+---
+
+### Étape 3 : Création du workflow principal
+
+* Créez un fichier `.github/workflows/deploy-webapp.yml`
+* Ce workflow doit :
+
+  * Recevoir en paramètre le runtime cible (ex : `.NET 8`)
+  * Appeler le workflow `verify-create-webapp.yml` en lui passant ce runtime
+  * Récupérer en sortie le profil de publication retourné par le workflow appelé
+  * Utiliser ce profil pour publier une application .NET compilée
+  * Vérifier que l’URL de base retourne bien `"Hello World"` et afficher un avertissement sinon
+
+---
+
+### Étape 4 : Bonus (à explorer)
+
+* Ajouter une étape de cleanup qui s’exécute toujours, même en cas d’échec des étapes précédentes
+* Améliorer la gestion des erreurs et des logs dans les workflows
+* Étendre la vérification pour supporter plusieurs slots de déploiement
+
+---
+
+## Remarques importantes
+
+* Le profil de publication contient les informations nécessaires pour déployer l’application.
+* En le retournant en output de votre workflow appelé, vous évitez de devoir le stocker sur disque ou dans des secrets, ce qui simplifie le pipeline.
+* Faites attention à la taille des outputs dans GitHub Actions (limite \~64Ko).
+* La CLI Azure sera votre principal outil pour manipuler les ressources Azure dans ce TP.
+* Envoyer le runtime en paramètre permet de rendre le workflow flexible et réutilisable.
+
+---
+
+## Questions pour guider la réflexion
+
+* Comment passer un paramètre (runtime) à un workflow appelé via `workflow_call` ?
+* Comment récupérer un output de ce workflow appelé ?
+* Comment utiliser la CLI Azure pour créer une Web App avec un runtime spécifique ?
+* Comment exploiter le profil de publication pour publier sans écrire de fichier sur disque ?
+
+
