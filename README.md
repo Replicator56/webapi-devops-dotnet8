@@ -102,6 +102,8 @@ Ajoutez ces deux secrets :
 
 GitHub propose des **modèles de workflow**. Pour créer votre pipeline :
 
+> Avant de faire les modification ci dessous verifier "en dur" que le workflow fonctionne une fois fait decaler les variable dans les secret ;)
+
 1. Allez dans l’onglet **`Actions`** de votre dépôt GitHub
 2. Cliquez sur **`Configure`** à côté de **"Deploy .NET Core app to an Azure Web App"**
 3. Dans le fichier généré (`azure-webapps-dotnet-core.yml`) :
