@@ -7,16 +7,15 @@ on:
   workflow_dispatch:
 
 jobs:
-
-  gitleaks-scan:
+ scan:
+    name: gitleaks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: gitleaks/actions/gitleaks@v2.3.4
-        with:
-          args: detect --source . --verbose
+    - uses: actions/checkout@v1
+    - name: gitleaks-action
+      uses: dhsathiya/gitleaks-action@master
 
-  build:
+ build:
     strategy:
       matrix:
         os : [ubuntu-latest]
@@ -92,5 +91,6 @@ jobs:
           slot-name: 'Production'
           package: .
           publish-profile: ${{  secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4BB9B797473748639415218DA8C649AD }}
+
 
 
