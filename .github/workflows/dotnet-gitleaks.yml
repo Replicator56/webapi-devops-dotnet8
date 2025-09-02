@@ -13,7 +13,8 @@ jobs:
   gitleaks-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: gitleaks/actions/gitleaks@v2.3.4
-        with:
+    - uses: actions/checkout@v4
+    - name: gitleaks-action
+      uses: gitleaks/gitleaks-action@v2.3.4
+       with:
           args: detect --source . --verbose
