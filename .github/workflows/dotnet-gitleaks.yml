@@ -10,10 +10,16 @@ on:
     branches: [ "main" ]
 
 jobs:
-  gitleaks-scan:
+  gitleaks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Gitleaks
-      uses: DariuszPorowski/github-action-gitleaks@v2.1.0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # important pour que Gitleaks puisse analyser l’historique complet
+
+      - name: Run Gitleaks (scan source)
+        uses: DariuszPorowski/github-action-gitleaks@v2.1.0
+        with:
+          args: detect --source . --verbose
           
