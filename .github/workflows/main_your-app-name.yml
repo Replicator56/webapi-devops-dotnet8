@@ -40,7 +40,12 @@ jobs:
           path: ${{env.DOTNET_ROOT}}/myapp
 
   test:
-    runs-on: ubuntu-latest
+    strategy :
+      matrix:
+        os : [ubuntu-latest, windows-latest]
+        version: [ 8.0, 9.0]
+
+    runs-on: ${{matrix.os }}
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +53,7 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0'
+          dotnet-version: '${{matrix.version}}'
 
       - name: Restore dependencies
         run: dotnet restore
@@ -77,6 +82,6 @@ jobs:
           app-name: 'your-app-name'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4BB9B797473748639415218DA8C649AD }}
+          publish-profile: ${{  secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4BB9B797473748639415218DA8C649AD }}
 
 
