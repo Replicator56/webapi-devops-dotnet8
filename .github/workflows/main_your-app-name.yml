@@ -54,6 +54,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ false }}   # ce job ne s'exécutera jamais
     needs: [build, test] # Ne s’exécute que si build et test réussissent
     environment:
       name: 'Production'
@@ -73,4 +74,5 @@ jobs:
           slot-name: 'Production'
           package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4BB9B797473748639415218DA8C649AD }}
+
 
