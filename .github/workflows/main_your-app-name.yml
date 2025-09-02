@@ -36,7 +36,7 @@ jobs:
       - name: Upload artifact for next jobs
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
+          name: .net-app-${{matrix.version}}
           path: ${{env.DOTNET_ROOT}}/myapp
 
   test:
