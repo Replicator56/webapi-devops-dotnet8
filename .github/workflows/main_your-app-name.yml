@@ -11,9 +11,9 @@ jobs:
     name: gitleaks
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: gitleaks-action
-      uses: dhsathiya/gitleaks-action@master
+      uses: gitleaks/gitleaks-action@v2.3.4
 
  build:
     strategy:
@@ -91,6 +91,7 @@ jobs:
           slot-name: 'Production'
           package: .
           publish-profile: ${{  secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4BB9B797473748639415218DA8C649AD }}
+
 
 
 
