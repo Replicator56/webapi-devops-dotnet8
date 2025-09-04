@@ -37,8 +37,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ${{ env.PROJECT_PATH }}
 
-      - name: Format code
-        run: dotnet format ${{ env.PROJECT_PATH }} --check
+      - name: Verify code formatting
+        run: dotnet format ${{ env.PROJECT_PATH }} --verify-no-changes
 
       - name: Build project
         run: dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore
