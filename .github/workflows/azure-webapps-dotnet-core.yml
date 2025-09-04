@@ -3,8 +3,8 @@ name: Build and deploy ASP.Net Core app to an Azure Web App
 env:
   AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}      # nom de ta Web App sur Azure
   DOTNET_VERSION: '8.0.x'                                  # version .NET 8
-  PROJECT_PATH: 'MyWebApi/MyWebApi.csproj'                # chemin vers ton .csproj
-  PUBLISH_DIR: 'published'                                 # dossier de publication
+  PROJECT_PATH: 'MyWebApi/MyWebApi.csproj'                 # chemin vers ton .csproj
+  PUBLISH_DIR: 'published'                                  # dossier de publication
 
 on:
   push:
@@ -64,7 +64,6 @@ jobs:
       contents: none
     environment:
       name: 'Development'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - name: Download artifact from build job
@@ -73,9 +72,8 @@ jobs:
           name: dotnet-app
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ${{ env.PUBLISH_DIR }}
+          package: ./dotnet-app
