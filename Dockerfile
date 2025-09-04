@@ -1,17 +1,22 @@
-# Utilisation de l'image SDK .NET pour build
+# Étape 1 : build avec le SDK .NET
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copier le fichier csproj et restaurer les dépendances
-COPY MyWebApi/*.csproj ./
+# Copier uniquement le csproj et restaurer les dépendances
+COPY MyWebApi/*.csproj ./ 
 RUN dotnet restore
 
-# Copier le reste des fichiers et build de l'application
+# Copier le reste du code et publier
 COPY MyWebApi/. ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o /app/publish
 
-# Utilisation d'une image plus légère pour exécuter l'application
+# Étape 2 : runtime léger pour exécution
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/out ./
+COPY --from=build /app/publish ./
+
+# Configurer le port et URL
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+
 ENTRYPOINT ["dotnet", "MyWebApi.dll"]
