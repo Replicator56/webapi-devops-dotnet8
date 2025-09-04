@@ -1,27 +1,25 @@
-name: Build and deploy ASP.Net Core app to an Azure Web App
+name: Build and deploy .NET 8 Web API to Azure Web App
 
 env:
-  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}      # nom de ta Web App sur Azure
-  DOTNET_VERSION: '8.0.x'                                  # version .NET 8
-  PROJECT_PATH: 'MyWebApi/MyWebApi.csproj'                 # chemin vers ton .csproj
-  PUBLISH_DIR: 'published'                                  # dossier de publication
+  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+  DOTNET_VERSION: '8.0.x'
+  PROJECT_PATH: 'MyWebApi/MyWebApi.csproj'
+  PUBLISH_DIR: 'published'
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up .NET
+      - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
@@ -40,10 +38,10 @@ jobs:
       - name: Build project
         run: dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore
 
-      - name: Run tests (if any)
+      - name: Run tests if present
         run: |
           if ls **/*Tests.csproj 1> /dev/null 2>&1; then
-            dotnet test --configuration Release --no-build --verbosity normal
+            dotnet test ${{ env.PROJECT_PATH }} --no-build --verbosity normal
           else
             echo "No test projects found, skipping tests."
           fi
@@ -51,29 +49,9 @@ jobs:
       - name: Publish project
         run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -o ${{ env.PUBLISH_DIR }}
 
-      - name: Upload artifact for deployment
-        uses: actions/upload-artifact@v4
-        with:
-          name: dotnet-app
-          path: ${{ env.PUBLISH_DIR }}
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: none
-    environment:
-      name: 'Development'
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: dotnet-app
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ./dotnet-app
+          package: ${{ env.PUBLISH_DIR }}
