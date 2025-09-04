@@ -1,8 +1,10 @@
 ﻿# 🧪 TP – Déploiement CI/CD d'une Web API .NET 8 sur Azure
 
-####################### Badge #######################
-![CI/CD](https://github.com/replicator56/webapi-starter-dotnet8/actions/workflows/deploy-webapp.yml/badge.svg)
-#####################################################
+# WebAPI .NET 8 – CI/CD Demo
+
+| CI/CD Pipeline | Docker Publish | Tests |
+|----------------|----------------|-------|
+| ![CI/CD](https://github.com/Replicator56/webapi-starter-dotnet8/actions/workflows/deploy-webapp.yml/badge.svg) | ![Docker Publish](https://github.com/Replicator56/webapi-starter-dotnet8/actions/workflows/docker-publish.yml/badge.svg) | ![Tests](https://github.com/Replicator56/webapi-starter-dotnet8/actions/workflows/ci.yml/badge.svg) |
 
 
 
