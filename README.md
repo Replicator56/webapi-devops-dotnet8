@@ -1,5 +1,12 @@
 ﻿# 🧪 TP – Déploiement CI/CD d'une Web API .NET 8 sur Azure
 
+####################### Badge #######################
+![CI/CD](https://github.com/<ton-username>/<ton-repo>/actions/workflows/deploy-webapp.yml/badge.svg)
+#####################################################
+
+
+
+
 ## 🎯 Objectif
 
 À partir d’une Web API en .NET 8 fournie, vous devez :
