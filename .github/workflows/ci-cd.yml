@@ -10,7 +10,7 @@ env:
   PROJECT_PATH: 'MyWebApi/MyWebApi.csproj'
   PUBLISH_DIR: 'published'
   AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
-  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/webapi-demo
+  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/webapi-demo:latest
 
 jobs:
   build-and-test:
