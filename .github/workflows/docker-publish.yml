@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/webapi-demo
+  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/webapi-demo:latest
 
 jobs:
   build-and-push:
