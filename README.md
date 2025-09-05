@@ -346,3 +346,4 @@ Automatiser la création d’une Web App Azure (si elle n’existe pas) et le d�
 * Comment exploiter le profil de publication pour publier sans écrire de fichier sur disque ?
 
 
+# webapi-devops-dotnet8
